@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{layout/main :: content(~{::title}, ~{::body})}">
+<head>
+  <title>Category</title>
+</head>
+<body>
+<section>
+  <!-- tránh fallback GET -->
+  <form id="frmCat" enctype="multipart/form-data" method="post" action="javascript:void(0)">
+    <input type="hidden" id="categoryId" name="categoryId" th:value="${param.id}"/>
+    <div class="field">
+      <label>Name</label>
+      <input type="text" id="categoryName" name="categoryName" required/>
+    </div>
+    <div class="field">
+      <label>Icon</label>
+      <input type="file" id="icon" name="icon"/>
+      <div id="preview" style="margin-top:6px"></div>
+    </div>
+    <div class="actions">
+      <button class="btn" type="submit">Save</button>
+      <a class="btn" th:href="@{/admin/categories}">Back</a>
+    </div>
+  </form>
+</section>
+
+<script th:inline="javascript">
+  // base context-path an toàn ("/" hoặc "/app/")
+  const base = /*[[@{/}]]*/ '';
+  const urlJoin = (p)=> (base.endsWith('/')?base.slice(0,-1):base) + (p.startsWith('/')?p:'/'+p);
+
+  const id  = /*[[${param.id}]]*/ null;
+
+  function loadIfEdit(){
+    if(!id) return;
+    $.getJSON(urlJoin('/api/category/' + id), function(c){
+      $('#categoryName').val(c.categoryName);
+      if (c.icon) $('#preview').html(`<img src="${urlJoin('/uploads/'+c.icon)}" width="64">`);
+    });
+  }
+
+  $(document).on('submit','#frmCat', function(e){
+    e.preventDefault();
+    const fd = new FormData(this);
+    const isEdit = !!$('#categoryId').val();
+    const url = isEdit ? urlJoin('/api/category/updateCategory')
+                       : urlJoin('/api/category/addCategory');
+    const method = isEdit ? 'PUT' : 'POST';
+
+    $.ajax({ url, type: method, data: fd, cache:false, contentType:false, processData:false })
+      .done(()=> window.location.href = urlJoin('/admin/categories'))
+      .fail(xhr => alert('Lỗi lưu Category: ' + (xhr.responseText || xhr.status)));
+  });
+
+  $(loadIfEdit);
+</script>
+</body>
+</html>

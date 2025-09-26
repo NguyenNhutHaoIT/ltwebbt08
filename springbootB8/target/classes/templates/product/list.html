@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{layout/main :: content(~{::title}, ~{::body})}">
+<head><title>Product</title></head>
+<body>
+<section>
+  <div class="actions"><a class="btn" th:href="@{/admin/products/new}">add Product</a></div>
+  <table class="table" id="tblProd">
+    <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Image</th><th>Action</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script th:inline="javascript">
+  const base = /*[[@{/}]]*/ '';
+  const join = p => (base.endsWith('/')?base.slice(0,-1):base) + (p.startsWith('/')?p:'/'+p);
+
+  function loadProducts(){
+    $.getJSON(join('/api/product'))
+     .done(arr=>{
+        let rows='';
+        arr.forEach(p=>{
+          rows += `<tr>
+            <td>${p.productId ?? p.id ?? ''}</td>
+            <td>${p.productName ?? ''}</td>
+            <td>${p.unitPrice ?? ''}</td>
+            <td>${p.images? `<img src="${join('/uploads/'+p.images)}" width="40">` : ''}</td>
+            <td>
+              <button class="btn btn-edit" data-id="${p.productId ?? p.id}">Edit</button>
+              <button class="btn btn-danger btn-del" data-id="${p.productId ?? p.id}">Delete</button>
+            </td>
+          </tr>`;
+        });
+        $('#tblProd tbody').html(rows);
+     })
+     .fail(xhr => console.error('Load product fail', xhr));
+  }
+
+  $(document).on('click','.btn-edit', function(){
+    location.href = join('/admin/products/new') + '?id=' + $(this).data('id');
+  });
+  $(document).on('click','.btn-del', function(){
+    const id=$(this).data('id');
+    if(confirm('Xoá?')){
+      $.ajax({url: join('/api/product/deleteProduct')+'?productId='+id, type:'DELETE'})
+        .done(loadProducts);
+    }
+  });
+
+  $(loadProducts);
+</script>
+</body></html>

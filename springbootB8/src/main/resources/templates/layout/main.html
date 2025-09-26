@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" th:fragment="content(title, body)">
+<head>
+  <meta charset="UTF-8">
+  <title th:replace="${title} ?: ~{}">Admin</title>
+  <link th:href="@{/css/site.css}" rel="stylesheet"/>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<!-- HEADER: Thông tin cá nhân -->
+<header class="topbar">
+  <div class="owner">
+    <div class="owner-name" th:text="${owner.name}">Họ tên</div>
+    <div class="owner-meta">
+      <span>MSSV: <b th:text="${owner.studentId}">00000000</b></span>
+      <span> | Lớp: <b th:text="${owner.clazz}">Lớp</b></span>
+    </div>
+  </div>
+  <nav class="nav">
+    <a th:href="@{/admin/categories}">Categories</a>
+    <a th:href="@{/admin/products}">Products</a>
+   <a th:href="@{/swagger-ui/index.html}">Swagger UI</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div th:insert="${body}"></div>
+</main>
+
+<!-- FOOTER: Liên hệ -->
+<footer class="site-footer">
+  <div>
+    <span>Email: <a th:href="'mailto:' + ${owner.email}" th:text="${owner.email}">email</a></span>
+    <span> | SĐT: <span th:text="${owner.phone}">0000</span></span>
+  </div>
+  <div class="copy">
+    © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span> 
+    <span th:text="${owner.name}">Your Name</span>
+  </div>
+</footer>
+
+</body>
+</html>

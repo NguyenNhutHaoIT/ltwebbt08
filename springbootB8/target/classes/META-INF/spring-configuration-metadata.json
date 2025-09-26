@@ -1,0 +1,50 @@
+{
+  "groups": [
+    {
+      "name": "site.owner",
+      "type": "vn.iotstar.config.SiteInfoProperties",
+      "sourceType": "vn.iotstar.config.SiteInfoProperties"
+    },
+    {
+      "name": "storage",
+      "type": "vn.iotstar.storage.StorageProperties",
+      "sourceType": "vn.iotstar.storage.StorageProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "site.owner.clazz",
+      "type": "java.lang.String",
+      "sourceType": "vn.iotstar.config.SiteInfoProperties"
+    },
+    {
+      "name": "site.owner.email",
+      "type": "java.lang.String",
+      "sourceType": "vn.iotstar.config.SiteInfoProperties"
+    },
+    {
+      "name": "site.owner.name",
+      "type": "java.lang.String",
+      "sourceType": "vn.iotstar.config.SiteInfoProperties"
+    },
+    {
+      "name": "site.owner.phone",
+      "type": "java.lang.String",
+      "sourceType": "vn.iotstar.config.SiteInfoProperties"
+    },
+    {
+      "name": "site.owner.student-id",
+      "type": "java.lang.String",
+      "sourceType": "vn.iotstar.config.SiteInfoProperties"
+    },
+    {
+      "name": "storage.location",
+      "type": "java.lang.String",
+      "sourceType": "vn.iotstar.storage.StorageProperties"
+    }
+  ],
+  "hints": [],
+  "ignored": {
+    "properties": []
+  }
+}

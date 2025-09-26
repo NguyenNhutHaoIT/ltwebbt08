@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi"
+      th:replace="~{layout/main :: content(~{::title}, ~{::body})}">
+<head><title>Category</title></head>
+<body>
+<section>
+  <div class="actions"><a class="btn" th:href="@{/admin/categories/new}">add Category</a></div>
+  <table class="table" id="tblCat">
+    <thead><tr><th>ID</th><th>Name</th><th>Icon</th><th>Action</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script th:inline="javascript">
+  // context-path an toàn
+  const base = /*[[@{/}]]*/ '';
+  const join = p => (base.endsWith('/')?base.slice(0,-1):base) + (p.startsWith('/')?p:'/'+p);
+
+  function loadCats(){
+    $.getJSON(join('/api/category'))
+     .done(arr => {
+        let rows='';
+        arr.forEach(c=>{
+          rows += `<tr>
+            <td>${c.id ?? c.categoryId ?? ''}</td>
+            <td>${c.categoryName ?? ''}</td>
+            <td>${c.images ? `<img src="${join('/uploads/'+c.images)}" width="40">` : (c.icon||'')}</td>
+            <td>
+              <button class="btn btn-edit" data-id="${c.id ?? c.categoryId}">Edit</button>
+              <button class="btn btn-danger btn-del" data-id="${c.id ?? c.categoryId}">Delete</button>
+            </td>
+          </tr>`;
+        });
+        $('#tblCat tbody').html(rows);
+     })
+     .fail(xhr => console.error('Load category fail', xhr));
+  }
+
+  $(document).on('click','.btn-edit', function(){
+    location.href = join('/admin/categories/new') + '?id=' + $(this).data('id');
+  });
+  $(document).on('click','.btn-del', function(){
+    const id=$(this).data('id');
+    if(confirm('Xoá?')){
+      $.ajax({url: join('/api/category/deleteCategory')+'?categoryId='+id, type:'DELETE'})
+        .done(loadCats);
+    }
+  });
+
+  $(loadCats);
+</script>
+</body></html>
